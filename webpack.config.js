@@ -18,7 +18,7 @@ export default {
   },
   plugins: [
     new MonacoWebpackPlugin({
-      languages: ['json', 'yaml'], // Add supported languages here
+      // languages: ['json', 'yaml'], // Add supported languages here
       customLanguages: [
         {
           label: 'yaml',
