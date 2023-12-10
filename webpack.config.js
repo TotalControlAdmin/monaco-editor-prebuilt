@@ -1,9 +1,10 @@
+import webpack from 'webpack';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+
 
 export default {
-  entry: {
-    'monaco-editor': './src/editor.js'
-  },
+  entry: './src/editor.js',
   module: {
     rules: [
       {
@@ -11,24 +12,25 @@ export default {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.ttf$/,
-        type: 'asset',
-      }
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      (compiler) => {
+        new TerserPlugin().apply(compiler);
+      },
+    ]
+  },
   plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    }),
     new MonacoWebpackPlugin({
-      // languages: ['json', 'yaml'], // Add supported languages here
-      customLanguages: [
-        {
-          label: 'yaml',
-          entry: 'monaco-yaml',
-          worker: {
-            id: 'monaco-yaml/yamlWorker',
-            entry: 'monaco-yaml/yaml.worker',
-          },
-        },
-      ],
+      languages: ['json', 'yaml', 'xml'], // Add supported languages here
     }),
   ],
 };
